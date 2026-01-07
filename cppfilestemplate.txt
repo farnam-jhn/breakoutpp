@@ -16,8 +16,6 @@
 
 // Main function
 
-int main(){
 
-}
 
 // Functions
