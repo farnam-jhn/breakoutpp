@@ -45,11 +45,14 @@ int main(){
             // TODO
             break;
             case '4':
-                std::cout << "Press \"c\" to confirm";
+                clear();
+                std::cout << "Press \"c\" to confirm\n";
                 char confirmChar = getch();
                 if (confirmChar == 'c'){
+                    clear();
                     return 0;
                 }
+                clear();
             break;
 
         }
