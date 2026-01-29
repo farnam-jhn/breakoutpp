@@ -1,0 +1,25 @@
+you should cout this in order to get colored output on terminal:
+
+
+
+\033[<COLORCODE>m<YOUR TEXT>\033[0m
+
+
+color codes :
+    30-37: Foreground colors (30=black, 31=red, 32=green, 33=yellow, 34=blue, 35=magenta, 36=cyan, 37=white)
+
+    40-47: Background colors (same color order as foreground)
+
+    0: Reset to default
+
+    1: Bold/bright
+
+    4: Underline
+
+in order to use color + bold/underline you should use ; coloumn
+
+e.g.
+
+std::cout << "\033[31mThis is red text\033[0m" << std::endl;
+std::cout << "\033[32mThis is green text\033[0m" << std::endl;
+std::cout << "\033[1;34mThis is bold blue text\033[0m" << std::endl;
