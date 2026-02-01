@@ -4,7 +4,11 @@
 #include "includes/getchar.h"
 #include "includes/clear.h"
 #include "includes/board.h"
+#include "includes/cursorhide.h"
 #include <string>
+#include <chrono>
+#include <thread>
+#include <atomic>
 
 // Structures
 
@@ -37,7 +41,11 @@ int board_lenght = 80;
 int board_width = 30;
 std::string board[30][80];
 
-std::string block = "\033[31m█\033[0m";
+std::string block = "█";
+std::string blockRed = "\033[31m█\033[0m";
+std::string blockGreen= "\033[32m█\033[0m";
+std::string blockBlue = "\033[34m█\033[0m";
+std::string blockYellow = "\033[33m█\033[0m";
 std::string trCorner = "\033[34m╗\033[0m";
 std::string tlCorner = "\033[34m╔\033[0m";
 std::string brCorner = "\033[34m╝\033[0m";
@@ -55,14 +63,18 @@ void ballLocationFunction(Location loc, double slope, double hDistance);
 void setup();
 void deallocation();
 void locatePaddle(int x);
-
+void backgroundTask();
 // Main function
+
+std::atomic<bool> running(true);
 
 int main(){
 
+    using namespace std::chrono;
+
     // Unicode settings
     system("chcp 65001"); // for showing the unicode characters in terminal
-
+    show_console_cursor(false);
     // Menu
 
     while (true) {
@@ -70,10 +82,19 @@ int main(){
         char opt = optionChoosenByUser();
         switch (opt) {
             case '1':
+            {
+                std::thread background_thread(backgroundTask);
+                clear();
                 setup();
                 drawBoard();
-                getch(); // temporary
+                getch();
+
+                running = false;
+                background_thread.join();
+                running = true;  // Reset for next game
+
                 deallocation();
+            }
             break;
             case '2':
                 helpMenu();
@@ -83,8 +104,8 @@ int main(){
             break;
             case '4':
                 clear();
-                std::cout << std::endl << std::endl;
-                std::cout << "     Press \"c\" to confirm\n";
+                std::cout << std::endl;
+                std::cout << "  Press \"c\" to confirm\n";
                 char confirmChar = getch();
                 if (confirmChar == 'c'){
                     clear();
@@ -174,4 +195,19 @@ void setup(){
 // deallocatin board from heap
 void deallocation(){
     delete[] bricks;
+}
+
+// For board draw
+
+void backgroundTask() {
+    using namespace std::chrono;
+
+    auto interval = milliseconds(60);  // 60 would give us something around 60fps
+    auto next_time = steady_clock::now();
+
+    while (running) {
+        next_time += interval;
+        drawBoard();
+        std::this_thread::sleep_until(next_time);
+    }
 }

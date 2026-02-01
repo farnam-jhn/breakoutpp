@@ -1,9 +1,10 @@
 // Headers
 #include <iostream>
 #include <string>
-// #include "getchar.h"
-#include "clear.h"
-#include "board.h"
+#include <vector>
+#include <algorithm>
+#include <random>
+#include "setcursor.h"
 using namespace std;
 
 // Structures
@@ -17,6 +18,10 @@ extern int bricks_idx[36], bricks_idy[36];
 
 
 extern std::string block ;
+extern std::string blockRed ;
+extern std::string blockGreen;
+extern std::string blockBlue ;
+extern std::string blockYellow ;
 extern std::string trCorner ;
 extern std::string tlCorner ;
 extern std::string brCorner ;
@@ -29,7 +34,7 @@ extern std::string verticalLine ;
 
 void drawBoard(){
 
-    clear();
+    gotoxy(0, 0);
     string currentChar;
     cout << endl << endl;
     for(int i = 0; i < board_width; i++){
@@ -45,8 +50,15 @@ void drawBoard(){
                     cout << currentChar;
             }
             else if (currentChar == block) {
-                for (int k = 0 ; k < 5 ; k++){
-                    cout << block;
+
+                // first we shuffle colors based on the line
+
+                std::mt19937 gen(i+1);
+                std::vector<std::string> colors = {blockRed, blockBlue, blockGreen, blockYellow, block};
+                std::shuffle(colors.begin(), colors.end(), gen);
+
+                for(const auto& color : colors) {
+                    std::cout << color;
                 }
                 j += 4;
             }
@@ -61,6 +73,7 @@ void drawBoard(){
             }
         }
         cout << endl;
+
     }
 }
 
@@ -74,4 +87,10 @@ bool isBrick(int x, int y){
         }
     }
     return false;
+}
+
+// Proccessing input
+
+void inputProccessing(){
+
 }
