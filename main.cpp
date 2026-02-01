@@ -35,7 +35,16 @@ struct Paddle{
 
 int board_lenght = 80;
 int board_width = 30;
-char board[30][80];
+std::string board[30][80];
+
+std::string block = "\033[31m█\033[0m";
+std::string trCorner = "\033[34m╗\033[0m";
+std::string tlCorner = "\033[34m╔\033[0m";
+std::string brCorner = "\033[34m╝\033[0m";
+std::string blCorner = "\033[34m╚\033[0m";
+std::string paddeleLine = "\033[32m╍\033[0m";
+std::string horizontalLine = "\033[34m═\033[0m";
+std::string verticalLine = "\033[34m║\033[0m";
 
 Brick* bricks = nullptr;
 int bricks_idx[36], bricks_idy[36];
@@ -46,7 +55,6 @@ void ballLocationFunction(Location loc, double slope, double hDistance);
 void setup();
 void deallocation();
 void locatePaddle(int x);
-void helpMenu();
 
 // Main function
 
@@ -75,7 +83,8 @@ int main(){
             break;
             case '4':
                 clear();
-                std::cout << "Press \"c\" to confirm\n";
+                std::cout << std::endl << std::endl;
+                std::cout << "     Press \"c\" to confirm\n";
                 char confirmChar = getch();
                 if (confirmChar == 'c'){
                     clear();
@@ -100,7 +109,7 @@ void ballLocationFunction(Location loc, double slope, double hDistance){
 }
 
 void locatePaddle(int x){ // receives starting point x because y stays the same
-    board[board_width - 2][x] = '=';
+    board[board_width - 2][x] = paddeleLine;
 }
 
 // setup the board when starting new game
@@ -127,25 +136,24 @@ void setup(){
 
     // setting up borders
     for(int i = 1; i < board_lenght - 1; i++){
-        board[0][i] = '-'; // top
-        board[board_width - 1][i] = '-'; // bottom
+        board[0][i] = horizontalLine; // top
+        board[board_width - 1][i] = horizontalLine; // bottom
     }
     for(int i = 1; i < board_width - 1; i++){
-        board[i][0] = '|'; // right
-        board[i][board_lenght - 1] = '|'; // left
+        board[i][0] = verticalLine; // right
+        board[i][board_lenght - 1] = verticalLine; // left
     }
     // setting up corners
-    board[0][0] = '+';
-    board[0][board_lenght - 1] = '+';
-    board[board_width - 1][0] = '+';
-    board[board_width - 1][board_lenght - 1] = '+';
+    board[0][0] = tlCorner;
+    board[0][board_lenght - 1] = trCorner;
+    board[board_width - 1][0] = blCorner;
+    board[board_width - 1][board_lenght - 1] = brCorner;
 
-    
     // setting up bricks
     for(int i = 1; i <= 3; i++){
         for(int j = 1; j < board_lenght - 1; j++){
             if(isBrick(i, j)){
-                board[i][j] = '#';
+                board[i][j] = block;
                 j += 4;
             }
         }
@@ -166,64 +174,4 @@ void setup(){
 // deallocatin board from heap
 void deallocation(){
     delete[] bricks;
-}
-
-void helpMenu(){
-    clear();
-    std::cout << std::endl << std::endl
-              << "\033[34m           ╔══════════════════════════════════════════════════════════════════════╗      \033[0m" << std::endl
-              << "\033[34m           ║\033[0m"
-              << "                                                                      "
-              << "\033[34m║      \033[0m" << std::endl
-              << "\033[34m           ║\033[0m"
-              << "  The game consist of few elements :                                  "
-              << "\033[34m║      \033[0m" << std::endl
-              << "\033[34m           ║\033[0m"
-              << "  1. The ball, 2. Paddel, 3. Blocks                                   "
-              << "\033[34m║      \033[0m" << std::endl
-              << "\033[34m           ║\033[0m"
-              << "                                                                      "
-              << "\033[34m║      \033[0m" << std::endl
-              << "\033[34m           ║\033[0m"
-              << "  The ball starts moving in a line; whenever the ball hits the wall,  "
-              << "\033[34m║      \033[0m" << std::endl
-              << "\033[34m           ║\033[0m"
-              << "  a block or the paddel it reflects like a beam and whenever it hits  "
-              << "\033[34m║      \033[0m" << std::endl
-              << "\033[34m           ║\033[0m"
-              << "  a block, the block gets destroyed.                                  "
-              << "\033[34m║      \033[0m" << std::endl
-              << "\033[34m           ║\033[0m"
-              << "                                                                      "
-              << "\033[34m║      \033[0m" << std::endl
-              << "\033[34m           ║\033[0m"
-              << "  The goal is to destroy all of the blocks                            "
-              << "\033[34m║      \033[0m" << std::endl
-              << "\033[34m           ║\033[0m"
-              << "                                                                      "
-              << "\033[34m║      \033[0m" << std::endl
-              << "\033[34m           ║\033[0m"
-              << "  If your ball fall down and don't touch the paddel you lose a        "
-              << "\033[34m║      \033[0m" << std::endl
-              << "\033[34m           ║\033[0m"
-              << "  heart; you have 3 hearts, if you lose them all you lose.            "
-              << "\033[34m║      \033[0m" << std::endl
-              << "\033[34m           ║\033[0m"
-              << "                                                                      "
-              << "\033[34m║      \033[0m" << std::endl
-              << "\033[34m           ║\033[0m"
-              << "  You can move the paddel using \"A\" & \"D\" to move left & right.       "
-              << "\033[34m║      \033[0m" << std::endl
-              << "\033[34m           ║\033[0m"
-              << "                                                                      "
-              << "\033[34m║      \033[0m" << std::endl
-              << "\033[34m           ║\033[0m"
-              << "  Press any button to exit.                                           "
-              << "\033[34m║      \033[0m" << std::endl
-              << "\033[34m           ║\033[0m"
-              << "                                                                      "
-              << "\033[34m║      \033[0m" << std::endl
-              << "\033[34m           ╚══════════════════════════════════════════════════════════════════════╝      \033[0m" << std::endl;
-
-    getch();
 }

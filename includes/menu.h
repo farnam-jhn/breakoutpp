@@ -2,3 +2,4 @@
 #include <iostream>
 
 char optionChoosenByUser();
+void helpMenu();

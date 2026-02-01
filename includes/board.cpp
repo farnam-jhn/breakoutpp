@@ -1,6 +1,7 @@
 // Headers
 #include <iostream>
-#include "getchar.h"
+#include <string>
+// #include "getchar.h"
 #include "clear.h"
 #include "board.h"
 using namespace std;
@@ -9,44 +10,58 @@ using namespace std;
 
 // Global varialbes
 
-extern char board[30][80];
+extern string board[30][80];
 extern int board_width;
 extern int board_lenght;
 extern int bricks_idx[36], bricks_idy[36];
+
+
+extern std::string block ;
+extern std::string trCorner ;
+extern std::string tlCorner ;
+extern std::string brCorner ;
+extern std::string blCorner ;
+extern std::string paddeleLine ;
+extern std::string horizontalLine ;
+extern std::string verticalLine ;
 
 // Functions
 
 void drawBoard(){
 
     clear();
-    char current_char;
+    string currentChar;
+    cout << endl << endl;
     for(int i = 0; i < board_width; i++){
+        cout << "    ";
         for(int j = 0; j < board_lenght; j++){
-            current_char = board[i][j];
-            switch(current_char)
-            {
-            case '-': // borders
-            case '|':
-            case '+':
-                cout << current_char;
-                break;
-            case '#': // brick
-                cout << "#####";
+            currentChar = board[i][j];
+            if (currentChar == horizontalLine ||
+                currentChar == verticalLine ||
+                currentChar == tlCorner ||
+                currentChar == trCorner ||
+                currentChar == blCorner ||
+                currentChar == brCorner){
+                    cout << currentChar;
+            }
+            else if (currentChar == block) {
+                for (int k = 0 ; k < 5 ; k++){
+                    cout << block;
+                }
                 j += 4;
-                break;
-            case '=': // paddle
-                cout << "==========";
+            }
+            else if (currentChar == paddeleLine){
+                for (int k = 0 ; k < 10 ; k++){
+                    cout << paddeleLine;
+                }
                 j += 9;
-                break;
-            default:
-                cout << ' ';
-                break;
+            }
+            else {
+                    cout << " ";
             }
         }
         cout << endl;
     }
-
-    
 }
 
 // checking if a certain location contains a brick or not
