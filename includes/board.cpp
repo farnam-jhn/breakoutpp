@@ -21,18 +21,19 @@ extern int board_width;
 extern int board_lenght;
 extern int bricks_idx[36], bricks_idy[36];
 
-extern std::string block ;
-extern std::string blockRed ;
-extern std::string blockGreen;
-extern std::string blockBlue ;
-extern std::string blockYellow ;
-extern std::string trCorner ;
-extern std::string tlCorner ;
-extern std::string brCorner ;
-extern std::string blCorner ;
-extern std::string paddeleLine ;
-extern std::string horizontalLine ;
-extern std::string verticalLine ;
+extern string ballChar ;
+extern string block ;
+extern string blockRed ;
+extern string blockGreen;
+extern string blockBlue ;
+extern string blockYellow ;
+extern string trCorner ;
+extern string tlCorner ;
+extern string brCorner ;
+extern string blCorner ;
+extern string paddeleLine ;
+extern string horizontalLine ;
+extern string verticalLine ;
 
 // Functions
 
@@ -50,7 +51,8 @@ void drawBoard(){
                 currentChar == tlCorner ||
                 currentChar == trCorner ||
                 currentChar == blCorner ||
-                currentChar == brCorner){
+                currentChar == brCorner ||
+                currentChar == ballChar){
                     cout << currentChar;
             }
             else if (currentChar == block) {
@@ -104,26 +106,26 @@ int inputProccessing(Paddle &paddle){
     int temp = paddle.start_loc.x;
     switch (inputChar) {
         case 'a' :
-            if (paddle.start_loc.x > 1){
-                paddle.start_loc.x--;
+            if (paddle.start_loc.x - 3 >= 1){
+                paddle.start_loc.x -=3;
                 moved = true;
             }
         break;
         case 'A' :
-            if (paddle.start_loc.x > 1){
-                paddle.start_loc.x--;
+            if (paddle.start_loc.x - 3 >= 1){
+                paddle.start_loc.x -= 3;
                 moved = true;
             }
         break;
         case 'd' :
-            if (paddle.start_loc.x + 10 < board_lenght - 1){
-                paddle.start_loc.x++;
+            if (paddle.start_loc.x + 13 <= board_lenght - 2){
+                paddle.start_loc.x += 3;
                 moved = true;
             }
         break;
         case 'D' :
-            if (paddle.start_loc.x + 10 < board_lenght - 1){
-                paddle.start_loc.x++;
+            if (paddle.start_loc.x + 13 <= board_lenght - 2){
+                paddle.start_loc.x += 3;
                 moved = true;
             }
         break;

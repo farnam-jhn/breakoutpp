@@ -6,10 +6,13 @@
 #include "includes/board.h"
 #include "includes/cursorhide.h"
 #include "includes/structs.h"
+#include "includes/mechanic.h"
 #include <string>
 #include <chrono>
 #include <thread>
 #include <atomic>
+
+using namespace std::chrono;
 
 
 // Global variables
@@ -18,6 +21,7 @@ int board_lenght = 80;
 int board_width = 30;
 std::string board[30][80];
 
+std::string ballChar = "\033[32m●\033[0m";
 std::string block = "█";
 std::string blockRed = "\033[31m█\033[0m";
 std::string blockGreen= "\033[32m█\033[0m";
@@ -32,6 +36,7 @@ std::string horizontalLine = "\033[34m═\033[0m";
 std::string verticalLine = "\033[34m║\033[0m";
 
 Paddle paddle;
+Ball ball;
 
 Brick* bricks = nullptr;
 int bricks_idx[36], bricks_idy[36];
@@ -42,7 +47,8 @@ void ballLocationFunction(Location loc, double slope, double hDistance);
 void setup();
 void deallocation();
 void locatePaddle(int x);
-void backgroundTask();
+void boardRender();
+void ballMoveTask();
 
 // Main function
 
@@ -63,7 +69,8 @@ int main(){
         switch (opt) {
             case '1':
             {
-                std::thread background_thread(backgroundTask);
+                std::thread threadOne(boardRender);
+                std::thread threadTwo(ballMoveTask);
                 clear();
                 setup();
                 while (true){
@@ -75,7 +82,8 @@ int main(){
                 getch();
 
                 running = false;
-                background_thread.join();
+                threadOne.join();
+                threadTwo.join();
                 running = true;  // Reset for next game
 
                 deallocation();
@@ -174,6 +182,14 @@ void setup(){
         only the starting char of bricks and the paddle change. because it would be easier to layout them.
     */
 
+    // setup ball
+    ball.loc.x = 40;
+    ball.loc.y = 15;
+    ball.v.vX = 1;
+    ball.v.vY = 1;
+
+    board[ball.loc.y][ball.loc.x] = ballChar;
+
 }
 
 // deallocatin board from heap
@@ -183,10 +199,9 @@ void deallocation(){
 
 // For board draw
 
-void backgroundTask() {
-    using namespace std::chrono;
+void boardRender() {
 
-    auto interval = milliseconds(10);
+    auto interval = milliseconds(16);
     auto next_time = steady_clock::now();
 
     while (running) {
@@ -194,4 +209,18 @@ void backgroundTask() {
         drawBoard();
         std::this_thread::sleep_until(next_time);
     }
+
+}
+
+void ballMoveTask(){
+
+    auto interval = milliseconds(60);
+    auto next_time = steady_clock::now();
+
+    while (running) {
+        next_time += interval;
+        ballmover(ball);
+        std::this_thread::sleep_until(next_time);
+    }
+
 }

@@ -23,3 +23,13 @@ struct Paddle{
     Location start_loc;
     // int lenght; // possible feature, right now considered 10
 };
+
+struct Velocity{
+    double vX;
+    double vY;
+};
+
+struct Ball{
+    Location loc;
+    Velocity v;
+};
