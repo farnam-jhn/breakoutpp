@@ -1,5 +1,4 @@
 // Headers
-
 #include "includes/menu.h"
 #include "includes/getchar.h"
 #include "includes/clear.h"
@@ -9,6 +8,7 @@
 #include <chrono>
 #include <thread>
 #include <atomic>
+#include <iostream>
 
 // Structures
 
@@ -75,24 +75,22 @@ int main(){
     // Unicode settings
     system("chcp 65001"); // for showing the unicode characters in terminal
     show_console_cursor(false);
-    // Menu
 
     while (true) {
         clear();
         char opt = optionChoosenByUser();
         switch (opt) {
-            case '1':
-            {
-                std::thread background_thread(backgroundTask);
+            case '1': {
                 clear();
                 setup();
-                drawBoard();
+
+                running = true;
+                std::thread renderThread(backgroundTask);
+
                 getch();
-
                 running = false;
-                background_thread.join();
-                running = true;  // Reset for next game
 
+                renderThread.join();
                 deallocation();
             }
             break;
@@ -100,26 +98,23 @@ int main(){
                 helpMenu();
             break;
             case '3':
-            // TODO
+                // TODO
             break;
-            case '4':
+            case '4': {
                 clear();
-                std::cout << std::endl;
-                std::cout << "  Press \"c\" to confirm\n";
-                char confirmChar = getch();
-                if (confirmChar == 'c'){
+                std::cout << "Press \"c\" to confirm\n";
+                if (getch() == 'c') {
+                    show_console_cursor(true);
                     clear();
                     return 0;
                 }
-                clear();
+            }
             break;
-
         }
     }
-
 }
 
-// Functions
+// FUNCTIONS
 
 void ballLocationFunction(Location loc, double slope, double hDistance){
 
@@ -202,11 +197,12 @@ void deallocation(){
 void backgroundTask() {
     using namespace std::chrono;
 
-    auto interval = milliseconds(60);  // 60 would give us something around 60fps
+    auto interval = milliseconds(16);  // 60 would give us something around 60fps
     auto next_time = steady_clock::now();
 
     while (running) {
         next_time += interval;
+        clear();
         drawBoard();
         std::this_thread::sleep_until(next_time);
     }

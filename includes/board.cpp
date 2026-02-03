@@ -32,50 +32,57 @@ extern std::string verticalLine ;
 
 // Functions
 
-void drawBoard(){
+void drawBoard() {
 
-    gotoxy(0, 0);
-    string currentChar;
-    cout << endl << endl;
-    for(int i = 0; i < board_width; i++){
-        cout << "    ";
-        for(int j = 0; j < board_lenght; j++){
-            currentChar = board[i][j];
+    std::string frame;
+    frame.reserve(4000);   // جلوگیری از realloc
+
+    frame += "\n\n";
+
+    for (int i = 0; i < board_width; i++) {
+        frame += "    ";
+
+        for (int j = 0; j < board_lenght; j++) {
+            const std::string& currentChar = board[i][j];
+
             if (currentChar == horizontalLine ||
                 currentChar == verticalLine ||
                 currentChar == tlCorner ||
                 currentChar == trCorner ||
                 currentChar == blCorner ||
-                currentChar == brCorner){
-                    cout << currentChar;
+                currentChar == brCorner) {
+
+                frame += currentChar;
             }
             else if (currentChar == block) {
 
-                // first we shuffle colors based on the line
+                // رنگ ثابت (بدون shuffle در هر فریم)
+                frame += blockRed;
+                frame += blockBlue;
+                frame += blockGreen;
+                frame += blockYellow;
+                frame += block;
 
-                std::mt19937 gen(i+1);
-                std::vector<std::string> colors = {blockRed, blockBlue, blockGreen, blockYellow, block};
-                std::shuffle(colors.begin(), colors.end(), gen);
-
-                for(const auto& color : colors) {
-                    std::cout << color;
-                }
                 j += 4;
             }
-            else if (currentChar == paddeleLine){
-                for (int k = 0 ; k < 10 ; k++){
-                    cout << paddeleLine;
-                }
+            else if (currentChar == paddeleLine) {
+
+                for (int k = 0; k < 10; k++)
+                    frame += paddeleLine;
+
                 j += 9;
             }
             else {
-                    cout << " ";
+                frame += ' ';
             }
         }
-        cout << endl;
-
+        frame += '\n';
     }
+
+    // فقط یک بار چاپ
+    std::cout << frame;
 }
+
 
 // checking if a certain location contains a brick or not
 bool isBrick(int x, int y){
