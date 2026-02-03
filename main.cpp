@@ -1,39 +1,16 @@
 // Headers
+
 #include "includes/menu.h"
 #include "includes/getchar.h"
 #include "includes/clear.h"
 #include "includes/board.h"
 #include "includes/cursorhide.h"
+#include "includes/structs.h"
 #include <string>
 #include <chrono>
 #include <thread>
 #include <atomic>
-#include <iostream>
 
-// Structures
-
-struct Palyer{
-    int score;
-    std::string name;
-};
-
-struct Location{
-    int x;
-    int y;
-};
-
-struct Brick{
-    Location loc;
-    int width;
-    int lenght;
-    bool alive;
-    int score;
-};
-
-struct Paddle{
-    Location start_loc;
-    // int lenght; // possible feature, right now considered 10
-};
 
 // Global variables
 
@@ -54,6 +31,8 @@ std::string paddeleLine = "\033[32m╍\033[0m";
 std::string horizontalLine = "\033[34m═\033[0m";
 std::string verticalLine = "\033[34m║\033[0m";
 
+Paddle paddle;
+
 Brick* bricks = nullptr;
 int bricks_idx[36], bricks_idy[36];
 
@@ -64,6 +43,7 @@ void setup();
 void deallocation();
 void locatePaddle(int x);
 void backgroundTask();
+
 // Main function
 
 std::atomic<bool> running(true);
@@ -75,22 +55,29 @@ int main(){
     // Unicode settings
     system("chcp 65001"); // for showing the unicode characters in terminal
     show_console_cursor(false);
+    // Menu
 
     while (true) {
         clear();
         char opt = optionChoosenByUser();
         switch (opt) {
-            case '1': {
+            case '1':
+            {
+                std::thread background_thread(backgroundTask);
                 clear();
                 setup();
-
-                running = true;
-                std::thread renderThread(backgroundTask);
-
+                while (true){
+                    int q = inputProccessing(paddle);
+                    if (q == 0){
+                        break;
+                    }
+                }
                 getch();
-                running = false;
 
-                renderThread.join();
+                running = false;
+                background_thread.join();
+                running = true;  // Reset for next game
+
                 deallocation();
             }
             break;
@@ -98,23 +85,26 @@ int main(){
                 helpMenu();
             break;
             case '3':
-                // TODO
+            // TODO
             break;
-            case '4': {
+            case '4':
                 clear();
-                std::cout << "Press \"c\" to confirm\n";
-                if (getch() == 'c') {
-                    show_console_cursor(true);
+                std::cout << std::endl;
+                std::cout << "  Press \"c\" to confirm\n";
+                char confirmChar = getch();
+                if (confirmChar == 'c'){
                     clear();
                     return 0;
                 }
-            }
+                clear();
             break;
+
         }
     }
+
 }
 
-// FUNCTIONS
+// Functions
 
 void ballLocationFunction(Location loc, double slope, double hDistance){
 
@@ -176,7 +166,6 @@ void setup(){
     }
 
     // setup paddle
-    Paddle paddle;
     paddle.start_loc.x = (board_lenght - 10) / 2 - 1;
     paddle.start_loc.y = board_width - 2;
     locatePaddle(paddle.start_loc.x);
@@ -197,12 +186,11 @@ void deallocation(){
 void backgroundTask() {
     using namespace std::chrono;
 
-    auto interval = milliseconds(16);  // 60 would give us something around 60fps
+    auto interval = milliseconds(10);
     auto next_time = steady_clock::now();
 
     while (running) {
         next_time += interval;
-        clear();
         drawBoard();
         std::this_thread::sleep_until(next_time);
     }
