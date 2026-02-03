@@ -6,5 +6,6 @@
 
 void drawBoard();
 bool isBrick(int, int);
+int inputProccessing(Paddle &paddle);
 
 #endif
