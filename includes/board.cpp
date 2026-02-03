@@ -37,6 +37,8 @@ extern string verticalLine ;
 
 // Functions
 
+bool isBrick(int, int);
+
 void drawBoard(){
 
     gotoxy(0, 0);
@@ -55,7 +57,7 @@ void drawBoard(){
                 currentChar == ballChar){
                     cout << currentChar;
             }
-            else if (currentChar == block) {
+            else if (isBrick(i, j)) {
 
                 // first we shuffle colors based on the line
 
