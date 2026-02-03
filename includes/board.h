@@ -2,6 +2,7 @@
 #ifndef BOARD_H
 #define BOARD_H
 #include "getchar.h"
+#include "structs.h"
 #include <iostream>
 
 void drawBoard();
