@@ -1,9 +1,10 @@
 #pragma once
 #include <string>
 
-struct Palyer{
+struct Player{
     int score;
     std::string name;
+    bool initialInput = false;
 };
 
 struct Location{
@@ -25,8 +26,8 @@ struct Paddle{
 };
 
 struct Velocity{
-    double vX;
-    double vY;
+    int vX;
+    int vY;
 };
 
 struct Ball{

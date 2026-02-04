@@ -6,6 +6,7 @@
 using namespace std;
 
 extern Ball ball;
+extern Player player;
 extern int board_lenght;
 extern int board_width;
 extern string board[30][80];
@@ -13,7 +14,10 @@ extern string ballChar;
 extern int bricks_idx[36];
 extern int bricks_idy[36];
 
+
+
 void ballmover(Ball &ball){
+
     using namespace std::chrono_literals;
     // Clear old position
     board[ball.loc.y][ball.loc.x] = " ";
@@ -51,7 +55,6 @@ void ballmover(Ball &ball){
                 tempNewY = ball.loc.y + ball.v.vY;
             }
         }
-     
 
         // deleting the brick
         board[brick_tempNewY][brick_tempNewX] = " ";

@@ -15,11 +15,21 @@
 using namespace std::chrono;
 
 
-// Global variables
+// ----- Global variables -----
 
+// Game components
 int board_lenght = 80;
 int board_width = 30;
 std::string board[30][80];
+
+Paddle paddle;
+Ball ball;
+Player player;
+
+Brick* bricks = nullptr;
+int bricks_idx[36], bricks_idy[36];
+
+// Characters
 
 std::string ballChar = "\033[32m●\033[0m";
 std::string block = "█";
@@ -35,32 +45,31 @@ std::string paddeleLine = "\033[32m╍\033[0m";
 std::string horizontalLine = "\033[34m═\033[0m";
 std::string verticalLine = "\033[34m║\033[0m";
 
-Paddle paddle;
-Ball ball;
 
-Brick* bricks = nullptr;
-int bricks_idx[36], bricks_idy[36];
+// ----- Functions prototype -----
 
-// Functions prototype
-
-void ballLocationFunction(Location loc, double slope, double hDistance);
 void setup();
 void deallocation();
 void locatePaddle(int x);
 void boardRender();
 void ballMoveTask();
 
-// Main function
+// ----- Main function -----
 
-std::atomic<bool> running(true);
+std::atomic<bool> running(true); /* used in order to manage the thread
+                                    and prevent threads racing (racing : a thread reading
+                                    a variable created by another when it's not fully written) */
 
 int main(){
 
     using namespace std::chrono;
 
+    show_console_cursor(false); // hides the cursor
+
     // Unicode settings
+
     system("chcp 65001"); // for showing the unicode characters in terminal
-    show_console_cursor(false);
+
     // Menu
 
     while (true) {
@@ -68,32 +77,39 @@ int main(){
         char opt = optionChoosenByUser();
         switch (opt) {
             case '1':
-            {
-                std::thread threadOne(boardRender);
-                std::thread threadTwo(ballMoveTask);
+            { // written in scope to maintain the threads
                 clear();
-                setup();
+                std::cout << "\n\n    Enter your name : ";
+                std::cin >> player.name;
+
+                std::thread threadOne(boardRender); // creates a thread for board rendering
+                std::thread threadTwo(ballMoveTask); // created a thread for ball movement
+
+                clear();
+                setup(); // sets up the board
                 while (true){
                     int q = inputProccessing(paddle);
                     if (q == 0){
                         break;
                     }
                 }
-                getch();
 
-                running = false;
+
+                running = false; // closes the threads
+
                 threadOne.join();
                 threadTwo.join();
-                running = true;  // Reset for next game
 
-                deallocation();
+                running = true;  // opens the thread for new game
+
+                deallocation(); // de allocates the array in the heap
             }
             break;
             case '2':
                 helpMenu();
             break;
             case '3':
-            // TODO
+            // TODO : Game history
             break;
             case '4':
                 clear();
@@ -112,15 +128,7 @@ int main(){
 
 }
 
-// Functions
-
-void ballLocationFunction(Location loc, double slope, double hDistance){
-
-    // y = ax + b
-
-    loc.y = (double)loc.x * slope + hDistance;
-
-}
+// ----- Functions -----
 
 void locatePaddle(int x){ // receives starting point x because y stays the same
     board[board_width - 2][x] = paddeleLine;
@@ -185,6 +193,11 @@ void setup(){
     // setup ball
     ball.loc.x = 40;
     ball.loc.y = 15;
+
+    /* Note : the velocity below is not suitable for configuring the speed
+    in order to change the speed, change the value of interval in ballMoveTask
+    changing the velocity below would affect the ball collision angle.*/
+
     ball.v.vX = 1;
     ball.v.vY = 1;
 
@@ -192,12 +205,13 @@ void setup(){
 
 }
 
-// deallocatin board from heap
+// deallocating board from heap
+
 void deallocation(){
     delete[] bricks;
 }
 
-// For board draw
+// Board rendering
 
 void boardRender() {
 
@@ -211,6 +225,8 @@ void boardRender() {
     }
 
 }
+
+// Ball rendering
 
 void ballMoveTask(){
 

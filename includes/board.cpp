@@ -1,4 +1,5 @@
 // Headers
+
 #include <iostream>
 #include <thread>
 #include <string>
@@ -11,8 +12,6 @@
 #include "setcursor.h"
 #include "structs.h"
 using namespace std;
-
-// Structures
 
 // Global varialbes
 
@@ -34,6 +33,7 @@ extern string blCorner ;
 extern string paddeleLine ;
 extern string horizontalLine ;
 extern string verticalLine ;
+extern Player player;
 
 // Functions
 
@@ -59,15 +59,15 @@ void drawBoard(){
             }
             else if (isBrick(i, j)) {
 
-                // first we shuffle colors based on the line
+                std::mt19937 gen(i * 100 + j);  // generates a random based on seed (row and column)
 
-                std::mt19937 gen(i+1);
-                std::vector<std::string> colors = {blockRed, blockBlue, blockGreen, blockYellow, block};
-                std::shuffle(colors.begin(), colors.end(), gen);
+                std::vector<std::string> colors = {blockRed, blockBlue, blockGreen, blockYellow, block}; // Creates a dynamic array containing the colored blocks characters
+                std::shuffle(colors.begin(), colors.end(), gen); // shuffles the colors dynamic array
 
-                for(const auto& color : colors) {
-                    std::cout << color;
+                for(int k = 0; k < 5; k++) {
+                    std::cout << colors[0];
                 }
+
                 j += 4;
             }
             else if (currentChar == paddeleLine){
