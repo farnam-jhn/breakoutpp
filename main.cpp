@@ -21,6 +21,9 @@ using namespace std::chrono;
 int board_lenght = 80;
 int board_width = 30;
 std::string board[30][80];
+std::string hud[30][20];
+int hudLength = 20;
+int hudWidth = 30;
 
 Paddle paddle;
 Ball ball;

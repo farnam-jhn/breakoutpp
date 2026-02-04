@@ -2,7 +2,7 @@
 #include <string>
 
 struct Player{
-    int score;
+    int score = 0;
     std::string name;
     bool initialInput = false;
 };
