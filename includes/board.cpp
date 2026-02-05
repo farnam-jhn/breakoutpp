@@ -160,26 +160,25 @@ int inputProccessing(Paddle &paddle){
     int temp = paddle.start_loc.x;
     switch (inputChar) {
         case 'a' :
-            if (paddle.start_loc.x - 3 >= 1){
-                paddle.start_loc.x -=3;
-                moved = true;
-            }
-        break;
         case 'A' :
-            if (paddle.start_loc.x - 3 >= 1){
-                paddle.start_loc.x -= 3;
-                moved = true;
+        if (paddle.start_loc.x > 1) {
+            paddle.start_loc.x -= 3;
+
+            if (paddle.start_loc.x < 1) {
+                paddle.start_loc.x = 1;
             }
+            moved = true;
+        }
         break;
         case 'd' :
-            if (paddle.start_loc.x + 13 <= board_lenght - 2){
-                paddle.start_loc.x += 3;
-                moved = true;
-            }
-        break;
         case 'D' :
-            if (paddle.start_loc.x + 13 <= board_lenght - 2){
+            if (paddle.start_loc.x < board_lenght - 11) {
+
                 paddle.start_loc.x += 3;
+
+                if (paddle.start_loc.x > board_lenght - 11) {
+                    paddle.start_loc.x = board_lenght - 11;
+                }
                 moved = true;
             }
         break;

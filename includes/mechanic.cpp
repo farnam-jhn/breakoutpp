@@ -13,14 +13,13 @@ extern string board[30][80];
 extern string ballChar;
 extern int bricks_idx[36];
 extern int bricks_idy[36];
-
+extern string paddeleLine ;
+extern Paddle paddle;
 
 
 void ballmover(Ball &ball){
 
     using namespace std::chrono_literals;
-    // Clear old position
-    board[ball.loc.y][ball.loc.x] = " ";
 
     // Calculate new position
     int tempNewX = ball.loc.x + ball.v.vX;
@@ -56,8 +55,9 @@ void ballmover(Ball &ball){
             }
         }
 
-        // deleting the brick
+        // deleting the brick and adding the score
         board[brick_tempNewY][brick_tempNewX] = " ";
+        player.score += 1000;
         bricks_idx[brick_index] = -1;
         bricks_idy[brick_index] = -1;
     }
@@ -71,12 +71,26 @@ void ballmover(Ball &ball){
             ball.v.vY = -ball.v.vY;
             tempNewY = ball.loc.y + ball.v.vY;
         }
+
+        if (tempNewY == board_width - 2) {
+            // Check if the ball's X position is inside the paddle (width 10)
+            if (tempNewX >= paddle.start_loc.x && tempNewX < paddle.start_loc.x + 10) {
+                    ball.v.vY = -1; // Force ball to move UP
+                    tempNewY = ball.loc.y + ball.v.vY; // Update next Y immediately
+            }
+        }
     }
 
+    // Clear old position
+
+    if (ball.loc.x != tempNewX || ball.loc.y != tempNewY) {
+        board[ball.loc.y][ball.loc.x] = " ";
+    }
 
     // Update position
     ball.loc.x = tempNewX;
     ball.loc.y = tempNewY;
+
 
     // Draw ball at new position
     board[ball.loc.y][ball.loc.x] = ballChar;

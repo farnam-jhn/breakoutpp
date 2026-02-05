@@ -134,7 +134,9 @@ int main(){
 // ----- Functions -----
 
 void locatePaddle(int x){ // receives starting point x because y stays the same
+
     board[board_width - 2][x] = paddeleLine;
+
 }
 
 // setup the board when starting new game
@@ -194,7 +196,7 @@ void setup(){
     */
 
     // setup ball
-    ball.loc.x = 40;
+    ball.loc.x = 10;
     ball.loc.y = 15;
 
     /* Note : the velocity below is not suitable for configuring the speed
