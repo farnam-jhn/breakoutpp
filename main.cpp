@@ -7,6 +7,7 @@
 #include "includes/cursorhide.h"
 #include "includes/structs.h"
 #include "includes/mechanic.h"
+#include <cstdlib>
 #include <string>
 #include <chrono>
 #include <thread>
@@ -24,6 +25,7 @@ std::string board[30][80];
 std::string hud[30][20];
 int hudLength = 20;
 int hudWidth = 30;
+int velocitySpeed[3] = {60,70,80};
 
 Paddle paddle;
 Ball ball;
@@ -85,6 +87,11 @@ int main(){
                 std::cout << "\n\n    Enter your name : ";
                 std::cin >> player.name;
 
+                clear();
+
+                std::cout << "\n\n    PRESS ANY KEY TO START THE GAME. \n";
+
+                getch();
                 std::thread threadOne(boardRender); // creates a thread for board rendering
                 std::thread threadTwo(ballMoveTask); // created a thread for ball movement
 
@@ -134,9 +141,7 @@ int main(){
 // ----- Functions -----
 
 void locatePaddle(int x){ // receives starting point x because y stays the same
-
     board[board_width - 2][x] = paddeleLine;
-
 }
 
 // setup the board when starting new game
@@ -196,7 +201,7 @@ void setup(){
     */
 
     // setup ball
-    ball.loc.x = 10;
+    ball.loc.x = 22;
     ball.loc.y = 15;
 
     /* Note : the velocity below is not suitable for configuring the speed
@@ -235,10 +240,10 @@ void boardRender() {
 
 void ballMoveTask(){
 
-    auto interval = milliseconds(60);
     auto next_time = steady_clock::now();
 
     while (running) {
+        auto interval = milliseconds(velocitySpeed[abs(ball.v.vX) - 1]);
         next_time += interval;
         ballmover(ball);
         std::this_thread::sleep_until(next_time);

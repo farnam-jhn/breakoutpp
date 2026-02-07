@@ -75,8 +75,22 @@ void ballmover(Ball &ball){
         if (tempNewY == board_width - 2) {
             // Check if the ball's X position is inside the paddle (width 10)
             if (tempNewX >= paddle.start_loc.x && tempNewX < paddle.start_loc.x + 10) {
-                    ball.v.vY = -1; // Force ball to move UP
-                    tempNewY = ball.loc.y + ball.v.vY; // Update next Y immediately
+
+                int distanceFromPS = tempNewX - paddle.start_loc.x;
+
+                ball.v.vY = -1; // Force ball to move UP
+
+                int velocityMagnitude[10] = {3,2,2,1,1,1,1,2,2,3}; // an array that gives any x axis distance between the ball and paddle start a velocity
+
+                if (ball.v.vX > 0){
+                    ball.v.vX = velocityMagnitude[distanceFromPS];
+                }
+                else {
+                    ball.v.vX = -velocityMagnitude[distanceFromPS];
+                }
+
+                tempNewY = ball.loc.y + ball.v.vY; // Update next Y immediately
+
             }
         }
     }
