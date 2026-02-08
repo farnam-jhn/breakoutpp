@@ -19,6 +19,10 @@ extern Paddle paddle;
 
 void ballmover(Ball &ball){
 
+    if (player.health == 0){
+        player.gameover = true;
+    }
+
     using namespace std::chrono_literals;
 
     // Calculate new position
@@ -67,10 +71,17 @@ void ballmover(Ball &ball){
             tempNewX = ball.loc.x + ball.v.vX;
         }
 
-        if (tempNewY <= 0 || tempNewY >= board_width - 1){
+        if (tempNewY == board_width - 1){
+            player.health--;
             ball.v.vY = -ball.v.vY;
             tempNewY = ball.loc.y + ball.v.vY;
         }
+        else if (tempNewY <= 0 || tempNewY >= board_width - 1){
+            ball.v.vY = -ball.v.vY;
+            tempNewY = ball.loc.y + ball.v.vY;
+        }
+
+
 
         if (tempNewY == board_width - 2) {
             // Check if the ball's X position is inside the paddle (width 10)

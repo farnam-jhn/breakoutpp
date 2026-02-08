@@ -1,6 +1,5 @@
 #include <iostream>
 #include "getchar.h"
-#include "clear.h"
 
 
 
@@ -34,7 +33,7 @@ char optionChoosenByUser(){
 }
 
 void helpMenu(){
-    clear();
+    system("clear");
     std::cout << std::endl << std::endl
               << "\033[34m           ╔══════════════════════════════════════════════════════════════════════╗      \033[0m" << std::endl
               << "\033[34m           ║\033[0m"

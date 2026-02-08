@@ -2,7 +2,6 @@
 
 #include "includes/menu.h"
 #include "includes/getchar.h"
-#include "includes/clear.h"
 #include "includes/board.h"
 #include "includes/cursorhide.h"
 #include "includes/structs.h"
@@ -78,16 +77,16 @@ int main(){
     // Menu
 
     while (true) {
-        clear();
+        system("clear");
         char opt = optionChoosenByUser();
         switch (opt) {
             case '1':
             { // written in scope to maintain the threads
-                clear();
+                system("clear");
                 std::cout << "\n\n    Enter your name : ";
                 std::cin >> player.name;
 
-                clear();
+                system("clear");
 
                 std::cout << "\n\n    PRESS ANY KEY TO START THE GAME. \n";
 
@@ -95,7 +94,7 @@ int main(){
                 std::thread threadOne(boardRender); // creates a thread for board rendering
                 std::thread threadTwo(ballMoveTask); // created a thread for ball movement
 
-                clear();
+                system("clear");
                 setup(); // sets up the board
                 while (true){
                     int q = inputProccessing(paddle);
@@ -122,15 +121,15 @@ int main(){
             // TODO : Game history
             break;
             case '4':
-                clear();
+                system("clear");
                 std::cout << std::endl;
                 std::cout << "  Press \"c\" to confirm\n";
                 char confirmChar = getch();
                 if (confirmChar == 'c'){
-                    clear();
+                    system("clear");
                     return 0;
                 }
-                clear();
+                system("clear");
             break;
 
         }
