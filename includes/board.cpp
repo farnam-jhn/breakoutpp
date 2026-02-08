@@ -7,7 +7,6 @@
 #include <vector>
 #include <algorithm>
 #include <random>
-#include "clear.h"
 #include "getchar.h"
 #include "setcursor.h"
 #include "structs.h"
@@ -42,6 +41,7 @@ extern Player player;
 
 void hudCalculation();
 string scoreInString();
+
 // Functions
 
 bool isBrick(int, int);
@@ -147,6 +147,12 @@ void hudCalculation(){
         hud[2][i + 2] = score[i];
     }
 
+    string health = " Health : " + to_string(player.health);
+
+    for (int i = 0 ; i < 11 ; i++){
+        hud[4][i + 2] = health[i];
+    }
+
 }
 
 // Proccessing input
@@ -195,7 +201,7 @@ int inputProccessing(Paddle &paddle){
             gotoxy(0, 33);
             cout << "                                                                               ";
             return 1;
-            clear();
+            system("clear");
     }
 
     // Changing paddle location

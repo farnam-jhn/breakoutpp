@@ -15,9 +15,17 @@ extern int bricks_idx[36];
 extern int bricks_idy[36];
 extern string paddeleLine ;
 extern Paddle paddle;
+extern int bricksCount;
 
 
 void ballmover(Ball &ball){
+
+    if (player.health == 0){
+        player.gameover = true;
+    }
+    else if (bricksCount == 0){
+        player.won = true;
+    }
 
     using namespace std::chrono_literals;
 
@@ -42,6 +50,7 @@ void ballmover(Ball &ball){
                 tempNewY = ball.loc.y + ball.v.vY;
                 // delete brick and add score
                 player.score += 1000;
+                bricksCount--;
                 bricks_idx[i] = -1;
                 bricks_idy[i] = -1;
                 
@@ -98,6 +107,7 @@ void ballmover(Ball &ball){
                 
                 // delete brick and add score
                 player.score += 1000;
+                bricksCount--;
                 bricks_idx[i] = -1;
                 bricks_idy[i] = -1;
                 
@@ -113,13 +123,21 @@ void ballmover(Ball &ball){
         ball.v.vX = -ball.v.vX;
         tempNewX = ball.loc.x + ball.v.vX;
     }
-    if (tempNewY <= 0 || tempNewY >= board_width - 1){
+
+    if (tempNewY == board_width - 1){
+        player.health--;
+        ball.v.vY = -ball.v.vY;
+        tempNewY = ball.loc.y + ball.v.vY;
+    }
+    else if (tempNewY <= 0 || tempNewY >= board_width - 1){
         ball.v.vY = -ball.v.vY;
         tempNewY = ball.loc.y + ball.v.vY;
     }
 
-    // Paddle collision
+
+
     if (tempNewY == board_width - 2) {
+        // Check if the ball's X position is inside the paddle (width 10)
         if (tempNewX >= paddle.start_loc.x && tempNewX < paddle.start_loc.x + 10) {
 
             int distanceFromPS = tempNewX - paddle.start_loc.x;
@@ -139,7 +157,6 @@ void ballmover(Ball &ball){
 
         }
     }
-
     // Clear old position
 
     if (ball.loc.x != tempNewX || ball.loc.y != tempNewY) {

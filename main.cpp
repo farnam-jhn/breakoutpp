@@ -2,7 +2,6 @@
 
 #include "includes/menu.h"
 #include "includes/getchar.h"
-#include "includes/clear.h"
 #include "includes/board.h"
 #include "includes/cursorhide.h"
 #include "includes/structs.h"
@@ -26,7 +25,7 @@ std::string hud[30][20];
 int hudLength = 20;
 int hudWidth = 30;
 int velocitySpeed[3] = {60,70,80};
-
+int bricksCount = 36;
 Paddle paddle;
 Ball ball;
 Player player;
@@ -58,6 +57,7 @@ void deallocation();
 void locatePaddle(int x);
 void boardRender();
 void ballMoveTask();
+void endGame();
 
 // ----- Main function -----
 
@@ -78,16 +78,16 @@ int main(){
     // Menu
 
     while (true) {
-        clear();
+        system("clear");
         char opt = optionChoosenByUser();
         switch (opt) {
             case '1':
             { // written in scope to maintain the threads
-                clear();
+                system("clear");
                 std::cout << "\n\n    Enter your name : ";
                 std::cin >> player.name;
 
-                clear();
+                system("clear");
 
                 std::cout << "\n\n    PRESS ANY KEY TO START THE GAME. \n";
 
@@ -95,7 +95,7 @@ int main(){
                 std::thread threadOne(boardRender); // creates a thread for board rendering
                 std::thread threadTwo(ballMoveTask); // created a thread for ball movement
 
-                clear();
+                system("clear");
                 setup(); // sets up the board
                 while (true){
                     int q = inputProccessing(paddle);
@@ -105,7 +105,6 @@ int main(){
                 }
 
 
-                running = false; // closes the threads
 
                 threadOne.join();
                 threadTwo.join();
@@ -122,15 +121,15 @@ int main(){
             // TODO : Game history
             break;
             case '4':
-                clear();
+                system("clear");
                 std::cout << std::endl;
                 std::cout << "  Press \"c\" to confirm\n";
                 char confirmChar = getch();
                 if (confirmChar == 'c'){
-                    clear();
+                    system("clear");
                     return 0;
                 }
-                clear();
+                system("clear");
             break;
 
         }
@@ -246,7 +245,32 @@ void ballMoveTask(){
         auto interval = milliseconds(velocitySpeed[abs(ball.v.vX) - 1]);
         next_time += interval;
         ballmover(ball);
+
+        if (player.gameover || player.won){
+            running = false; // closes the threads
+            std::this_thread::sleep_for(milliseconds(100));
+            system("clear");
+            endGame();
+            std::cout << "\n\n    Press any key to continue\n";
+            getch();
+        }
+
         std::this_thread::sleep_until(next_time);
     }
+
+}
+
+void endGame(){
+
+    // Reporting
+
+    if (player.gameover){
+        std::cout << "\n\n    Game over.\n";
+    }else {
+        std::cout << "\n\n    Game finished. \n    Congrats! You Won!";
+    }
+
+    std::cout << "\n    Your score : ";
+    std::cout << player.score;
 
 }
