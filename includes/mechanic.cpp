@@ -15,12 +15,15 @@ extern int bricks_idx[36];
 extern int bricks_idy[36];
 extern string paddeleLine ;
 extern Paddle paddle;
-
+extern int bricksCount;
 
 void ballmover(Ball &ball){
 
     if (player.health == 0){
         player.gameover = true;
+    }
+    else if (bricksCount == 0){
+        player.won = true;
     }
 
     using namespace std::chrono_literals;
@@ -36,7 +39,7 @@ void ballmover(Ball &ball){
             break;
         }
     }
-    int brick_index = (brick_tempNewY - 1) * 12 + (brick_tempNewX / 5) - 2;
+    int brick_index = (brick_tempNewY - 1) * 12 + (brick_tempNewX / 5) - 2; // REMINDER : CHAMGE MAGIC NUMBERS INTO VARIABLES
     if(isBrick(brick_tempNewY, brick_tempNewX)){
         if(ball.v.vX > 0){ // heading right
             if(bricks_idx[brick_index - 1] == -1 && brick_tempNewX == tempNewX){
@@ -61,6 +64,7 @@ void ballmover(Ball &ball){
 
         // deleting the brick and adding the score
         board[brick_tempNewY][brick_tempNewX] = " ";
+        bricksCount--;
         player.score += 1000;
         bricks_idx[brick_index] = -1;
         bricks_idy[brick_index] = -1;

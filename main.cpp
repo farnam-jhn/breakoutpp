@@ -25,7 +25,7 @@ std::string hud[30][20];
 int hudLength = 20;
 int hudWidth = 30;
 int velocitySpeed[3] = {60,70,80};
-
+int bricksCount = 36;
 Paddle paddle;
 Ball ball;
 Player player;
@@ -57,6 +57,7 @@ void deallocation();
 void locatePaddle(int x);
 void boardRender();
 void ballMoveTask();
+void endGame();
 
 // ----- Main function -----
 
@@ -104,7 +105,6 @@ int main(){
                 }
 
 
-                running = false; // closes the threads
 
                 threadOne.join();
                 threadTwo.join();
@@ -245,7 +245,32 @@ void ballMoveTask(){
         auto interval = milliseconds(velocitySpeed[abs(ball.v.vX) - 1]);
         next_time += interval;
         ballmover(ball);
+
+        if (player.gameover || player.won){
+            running = false; // closes the threads
+            std::this_thread::sleep_for(milliseconds(100));
+            system("clear");
+            endGame();
+            std::cout << "\n\n    Press any key to continue\n";
+            getch();
+        }
+
         std::this_thread::sleep_until(next_time);
     }
+
+}
+
+void endGame(){
+
+    // Reporting
+
+    if (player.gameover){
+        std::cout << "\n\n    Game over.\n";
+    }else {
+        std::cout << "\n\n    Game finished. \n    Congrats! You Won!";
+    }
+
+    std::cout << "\n    Your score : ";
+    std::cout << player.score;
 
 }
