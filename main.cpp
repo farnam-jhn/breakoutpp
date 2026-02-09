@@ -6,6 +6,7 @@
 #include "includes/cursorhide.h"
 #include "includes/structs.h"
 #include "includes/mechanic.h"
+#include "includes/history.h"
 #include <cstdlib>
 #include <string>
 #include <chrono>
@@ -120,6 +121,7 @@ int main(){
                     endGame();
                     std::cout << "\n\n    Press enter to return to main menu\n";
                     getch();
+                    saveData(player.name, player.score);
                 }
 
                 deallocation(); // de allocates the array in the heap
@@ -129,7 +131,7 @@ int main(){
                 helpMenu();
             break;
             case '3':
-            // TODO : Game history
+                showHistory();
             break;
             case '4':
                 system("clear");
