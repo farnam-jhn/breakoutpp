@@ -22,7 +22,9 @@ extern int board_lenght;
 extern int bricks_idx[36], bricks_idy[36];
 extern int hudLength;
 extern int hudWidth;
+extern int bricksCount;
 extern std::atomic<bool> running;
+extern std::atomic<bool> paused;
 
 extern string ballChar ;
 extern string block ;
@@ -42,11 +44,11 @@ extern Player player;
 // Function Prototypes
 
 void hudCalculation();
+string bCountInString();
 string scoreInString();
+bool isBrick(int, int);
 
 // Functions
-
-bool isBrick(int, int);
 
 void drawBoard(){
 
@@ -155,6 +157,18 @@ void hudCalculation(){
         hud[4][i + 2] = health[i];
     }
 
+    string bricksLine = " Bricks : " + bCountInString();
+
+    for (int i = 0 ; i < 12 ; i++){
+        hud[6][i + 2] = bricksLine[i];
+    }
+
+    if (paused) {
+        string pauseText = " PAUSED ";
+        for (int i = 0; i < 8; i++){
+            hud[8][i + 2] = pauseText[i];
+        }
+    }
 }
 
 // Proccessing input
@@ -167,9 +181,14 @@ int inputProccessing(Paddle &paddle){
     bool moved = false;
     int temp = paddle.start_loc.x;
     switch (inputChar) {
+        case 'p':
+        case 'P':
+            paused = !paused;
+            return 1;
+            break;
         case 'a' :
         case 'A' :
-        if (paddle.start_loc.x > 1) {
+        if (!paused && paddle.start_loc.x > 1) {
             paddle.start_loc.x -= 3;
 
             if (paddle.start_loc.x < 1) {
@@ -180,7 +199,7 @@ int inputProccessing(Paddle &paddle){
         break;
         case 'd' :
         case 'D' :
-            if (paddle.start_loc.x < board_lenght - 11) {
+            if (!paused && paddle.start_loc.x < board_lenght - 11) {
 
                 paddle.start_loc.x += 3;
 
@@ -203,7 +222,7 @@ int inputProccessing(Paddle &paddle){
 
     // Changing paddle location
 
-    if (moved){
+    if (!paused && moved){
         board[board_width - 2][paddle.start_loc.x] = paddeleLine;
         board[board_width - 2][temp] = " ";
     }
@@ -215,5 +234,11 @@ int inputProccessing(Paddle &paddle){
 string scoreInString(){
     string result = to_string(player.score);
     result.insert(0, 6 - result.length(), '0');
+    return result;
+}
+
+string bCountInString(){
+    string result = to_string(bricksCount);
+    result.insert(0, 2 - result.length(), '0');
     return result;
 }

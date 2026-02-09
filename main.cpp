@@ -66,6 +66,7 @@ void inputThread();
 std::atomic<bool> running(true); /* used in order to manage the thread
                                     and prevent threads racing (racing : a thread reading
                                     a variable created by another when it's not fully written) */
+std::atomic<bool> paused(false);
 
 int main(){
 
@@ -161,6 +162,11 @@ void locatePaddle(int x){ // receives starting point x because y stays the same
 // setup the board when starting new game
 void setup(){
 
+    /*
+        only the starting char of bricks and the paddle change. because it would be easier to layout them.
+    */
+
+
     // clearing board
 
     for (int i = 0; i < board_width; i++){
@@ -178,6 +184,11 @@ void setup(){
     bricksCount = 36;
 
     // setting up bricks
+    /*
+       How it works : it goes in a row and when ever it reaches the start of a brick it places that into the bricks_idx and does the same thing for the y.
+       Note : x and y in this function are swapped compared to cartesian system.
+     */
+
     bricks = new Brick[36]; // allocating board
     int counterX = 1, counterY = 10;
     for(int i = 0; i < 36; i++){ // saving the location of each brick
@@ -186,15 +197,11 @@ void setup(){
         bricks_idx[i] = counterX;
         bricks_idy[i] = counterY;
         counterY += 5;
-        if(i == 11 || i == 23){
+        if(i == 11 || i == 23){ // 11 is where firsto row of bricks end and 23 is end of the second row
             counterY = 10;
             counterX++;
         }
     }
-    /*
-        11, 23 and 36 are being used as temporry numbers
-        they should be replaced with variables made in the next levels of project
-    */
 
     // setting up borders
     for(int i = 1; i < board_lenght - 1; i++){
@@ -226,11 +233,8 @@ void setup(){
     paddle.start_loc.y = board_width - 2;
     locatePaddle(paddle.start_loc.x);
 
-    /*
-        only the starting char of bricks and the paddle change. because it would be easier to layout them.
-    */
 
-    // setup ball
+    // setup ball : locations are chosen such that the ball hits the paddle initially
     ball.loc.x = 22;
     ball.loc.y = 15;
 
@@ -289,13 +293,14 @@ void ballMoveTask(){
     while (running) {
         auto interval = milliseconds(velocitySpeed[abs(ball.v.vX) - 1]);
         next_time += interval;
+
+        if (!paused){
         ballmover(ball);
-
-        if (player.gameover || player.won){
-            running = false; // closes the threads
-            break;
+            if (player.gameover || player.won){
+                running = false; // closes the threads
+                break;
+            }
         }
-
         std::this_thread::sleep_until(next_time);
     }
 

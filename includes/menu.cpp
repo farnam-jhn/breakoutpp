@@ -79,6 +79,9 @@ void helpMenu(){
               << "  You can move the paddel using \"A\" & \"D\" to move left & right.       "
               << "\033[34m║      \033[0m" << std::endl
               << "\033[34m    ║\033[0m"
+              << "  Press \"P\" or \"p\" to pause the game.                                 "
+              << "\033[34m║      \033[0m" << std::endl
+              << "\033[34m    ║\033[0m"
               << "                                                                      "
               << "\033[34m║      \033[0m" << std::endl
               << "\033[34m    ║\033[0m"

@@ -2,6 +2,7 @@
 #include "board.h"
 #include <string>
 #include <thread>
+#include <atomic>
 
 using namespace std;
 
@@ -16,7 +17,7 @@ extern int bricks_idy[36];
 extern string paddeleLine ;
 extern Paddle paddle;
 extern int bricksCount;
-
+extern std::atomic<bool> paused;
 
 void ballmover(Ball &ball){
 
@@ -38,10 +39,10 @@ void ballmover(Ball &ball){
         if(bricks_idx[i] != -1 && bricks_idy[i] != -1){
             int brick_row = bricks_idx[i];
             int brick_col_start = bricks_idy[i];
-            
+
             // Check if ball is stuck in a brick
-            if(ball.loc.y == brick_row && 
-               ball.loc.x >= brick_col_start && 
+            if(ball.loc.y == brick_row &&
+               ball.loc.x >= brick_col_start &&
                ball.loc.x <= brick_col_start + 4){
                 // reverse both velocities
                 ball.v.vX = -ball.v.vX;
@@ -53,27 +54,27 @@ void ballmover(Ball &ball){
                 bricksCount--;
                 bricks_idx[i] = -1;
                 bricks_idy[i] = -1;
-                
+
                 goto skip_normal_collision;  // Skip rest of collision checks
             }
         }
     }
-    
+
     // Checking brick collison for new position
     for(int i = 0; i < 36; i++){
         if(bricks_idx[i] != -1 && bricks_idy[i] != -1){
             int brick_row = bricks_idx[i];
             int brick_col_start = bricks_idy[i];
             int brick_col_end = brick_col_start + 4;
-            
+
             // checking if there is a brick there, Works like (isBrick( , )) function
-            if(tempNewY == brick_row && 
-               tempNewX >= brick_col_start && 
+            if(tempNewY == brick_row &&
+               tempNewX >= brick_col_start &&
                tempNewX <= brick_col_end){
-                
+
                 bool bounceX = false;
                 bool bounceY = false;
-                
+
                 // X direction
                 if(ball.v.vX > 0 && ball.loc.x < brick_col_start){ // heading right
                     bounceX = true;
@@ -81,7 +82,7 @@ void ballmover(Ball &ball){
                 else if(ball.v.vX < 0 && ball.loc.x > brick_col_end){ // heading left
                     bounceX = true;
                 }
-                
+
                 // Y direction
                 if(ball.v.vY > 0 && ball.loc.y < brick_row){ // heading down
                     bounceY = true;
@@ -89,7 +90,7 @@ void ballmover(Ball &ball){
                 else if(ball.v.vY < 0 && ball.loc.y > brick_row){ // heading up
                     bounceY = true;
                 }
-                
+
                 if(bounceX && bounceY){ // Corner hit
 
                     // fixing the special case problem. in this case two bricks collapse at once
@@ -118,7 +119,7 @@ void ballmover(Ball &ball){
                             special_case_handled = true;
                         }
                     }
-                    
+
                     if(!special_case_handled){ // no special case accured
                         // delete brick and add score
                         player.score += 1000;
@@ -147,18 +148,18 @@ void ballmover(Ball &ball){
                     bricks_idx[i] = -1;
                     bricks_idy[i] = -1;
                 }
-                
+
                 // Recalculate position after bounce
                 tempNewX = ball.loc.x + ball.v.vX;
-                tempNewY = ball.loc.y + ball.v.vY;                
-                
+                tempNewY = ball.loc.y + ball.v.vY;
+
                 break;  // Only handle one brick per frame
             }
         }
     }
-    
+
     skip_normal_collision:
-    
+
     // Wall collision
     if (tempNewX <= 0 || tempNewX >= board_lenght - 1){
         ball.v.vX = -ball.v.vX;
