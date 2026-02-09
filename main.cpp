@@ -58,6 +58,7 @@ void locatePaddle(int x);
 void boardRender();
 void ballMoveTask();
 void endGame();
+void inputThread();
 
 // ----- Main function -----
 
@@ -83,6 +84,8 @@ int main(){
         switch (opt) {
             case '1':
             { // written in scope to maintain the threads
+                running.store(true);
+
                 system("clear");
                 std::cout << "\n\n    Enter your name : ";
                 std::cin >> player.name;
@@ -90,26 +93,34 @@ int main(){
                 system("clear");
 
                 std::cout << "\n\n    PRESS ANY KEY TO START THE GAME. \n";
-
                 getch();
+
+                running = true;
+
                 std::thread threadOne(boardRender); // creates a thread for board rendering
                 std::thread threadTwo(ballMoveTask); // created a thread for ball movement
+                std::thread threadThree(inputThread);
 
                 system("clear");
                 setup(); // sets up the board
-                while (true){
-                    int q = inputProccessing(paddle);
-                    if (q == 0){
-                        break;
-                    }
+
+                while (running && !player.gameover && !player.won) {
+                    // small sleep for threads to finish their jobs
+                    std::this_thread::sleep_for(milliseconds(100));
                 }
 
-
+                running = false;
 
                 threadOne.join();
                 threadTwo.join();
+                threadThree.detach();
 
-                running = true;  // opens the thread for new game
+                if (player.gameover || player.won) {
+                    system("clear");
+                    endGame();
+                    std::cout << "\n\n    Press enter to return to main menu\n";
+                    getch();
+                }
 
                 deallocation(); // de allocates the array in the heap
             }
@@ -145,6 +156,14 @@ void locatePaddle(int x){ // receives starting point x because y stays the same
 
 // setup the board when starting new game
 void setup(){
+
+    // setting up variables
+
+    player.gameover = false;
+    player.won = false;
+    player.score = 0;
+    player.health = 3;
+    bricksCount = 36;
 
     // setting up bricks
     bricks = new Brick[36]; // allocating board
@@ -214,6 +233,8 @@ void setup(){
 
 }
 
+
+
 // deallocating board from heap
 
 void deallocation(){
@@ -235,6 +256,18 @@ void boardRender() {
 
 }
 
+// Input processing thread
+
+void inputThread() {
+    while (running && !player.gameover && !player.won) {
+        int q = inputProccessing(paddle);
+        if (q == 0) {
+            running = false;
+            break;
+        }
+    }
+}
+
 // Ball rendering
 
 void ballMoveTask(){
@@ -248,11 +281,7 @@ void ballMoveTask(){
 
         if (player.gameover || player.won){
             running = false; // closes the threads
-            std::this_thread::sleep_for(milliseconds(100));
-            system("clear");
-            endGame();
-            std::cout << "\n\n    Press any key to continue\n";
-            getch();
+            break;
         }
 
         std::this_thread::sleep_until(next_time);

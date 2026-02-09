@@ -7,6 +7,7 @@
 #include <vector>
 #include <algorithm>
 #include <random>
+#include <atomic>
 #include "getchar.h"
 #include "setcursor.h"
 #include "structs.h"
@@ -21,6 +22,7 @@ extern int board_lenght;
 extern int bricks_idx[36], bricks_idy[36];
 extern int hudLength;
 extern int hudWidth;
+extern std::atomic<bool> running;
 
 extern string ballChar ;
 extern string block ;
@@ -160,6 +162,11 @@ void hudCalculation(){
 int inputProccessing(Paddle &paddle){
 
     using namespace std::chrono_literals; // for sleep function
+
+    // check if game is finished
+    // if (!running || player.gameover || player.won) {
+    //     return 0;
+    // }
 
     char inputChar = getch();
     bool moved = false;
