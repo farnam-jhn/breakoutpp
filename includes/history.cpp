@@ -92,7 +92,7 @@ void showHistory(){
     }
 
     system("clear");
-    const int tableWidth = 80;
+    const int tableWidth = 100;
     // Top border
     cout << endl << endl;
     cout << tlCorner;
@@ -101,7 +101,7 @@ void showHistory(){
     // Title
     cout << verticalLine
          << "\033[33m"  // yellow
-         << setw(tableWidth) << left << "                        GAME HISTORY"
+         << setw(tableWidth) << left << "                                            GAME HISTORY"
          << "\033[0m" // reset
          << verticalLine << endl;
     // Separator
@@ -113,9 +113,9 @@ void showHistory(){
          << "\033[36m" // cyan
          << setw(15) << left << "Player"
          << setw(12) << "Best Score"
-         << setw(16) << "Best Date"
-         << setw(12) << "Last Score"
-         << setw(16) << "Last Date"
+         << setw(25) << "Best Date"
+         << setw(14) << "Last Score"
+         << setw(32) << "Last Date"
          << "\033[0m" // reset
          << " " << verticalLine << endl;
     // Header separator
@@ -125,7 +125,7 @@ void showHistory(){
     string line;
     while(getline(history, line)){
 
-         int splitter[4];
+        int splitter[4];
         splitter[0] = line.find(",");
         splitter[1] = line.find(",", splitter[0] + 1);
         splitter[2] = line.find(",", splitter[1] + 1);
@@ -140,16 +140,16 @@ void showHistory(){
         cout << verticalLine << " "
              << "\033[32m" << setw(15) << left << player_name << "\033[0m" // green - reset
              << "\033[35m" << setw(12) << best_score << "\033[0m" // purple - reset
-             << setw(16) << best_score_date
-             << "\033[35m" << setw(12) << last_score << "\033[0m" // purple - reset
-             << setw(16) << last_score_date
+             << setw(16) << best_score_date << " "
+             << "\033[35m" << setw(14) << last_score << "\033[0m" // purple - reset
+             << setw(32) << last_score_date
              << " " << verticalLine << endl;
     }
     // Bottom border
     cout << blCorner;
     for(int i = 0; i < tableWidth; i++) cout << horizontalLine;
     cout << brCorner << endl;
-    
+
     // escape
     getch();
 }

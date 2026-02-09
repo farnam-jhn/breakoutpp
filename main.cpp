@@ -85,6 +85,9 @@ int main(){
         switch (opt) {
             case '1':
             { // written in scope to maintain the threads
+
+                setup(); // sets up the board
+
                 running.store(true);
 
                 system("clear");
@@ -103,7 +106,6 @@ int main(){
                 std::thread threadThree(inputThread);
 
                 system("clear");
-                setup(); // sets up the board
 
                 while (running && !player.gameover && !player.won) {
                     // small sleep for threads to finish their jobs
@@ -119,7 +121,7 @@ int main(){
                 if (player.gameover || player.won) {
                     system("clear");
                     endGame();
-                    std::cout << "\n\n    Press enter to return to main menu\n";
+                    std::cout << "\n\n    Press enter twice to return to main menu\n";
                     getch();
                     saveData(player.name, player.score);
                 }
@@ -158,6 +160,14 @@ void locatePaddle(int x){ // receives starting point x because y stays the same
 
 // setup the board when starting new game
 void setup(){
+
+    // clearing board
+
+    for (int i = 0; i < board_width; i++){
+        for (int j = 0; j < board_lenght; j++) {
+            board[i][j] = " ";
+        }
+    }
 
     // setting up variables
 

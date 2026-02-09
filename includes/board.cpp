@@ -163,11 +163,6 @@ int inputProccessing(Paddle &paddle){
 
     using namespace std::chrono_literals; // for sleep function
 
-    // check if game is finished
-    // if (!running || player.gameover || player.won) {
-    //     return 0;
-    // }
-
     char inputChar = getch();
     bool moved = false;
     int temp = paddle.start_loc.x;
@@ -203,12 +198,7 @@ int inputProccessing(Paddle &paddle){
         break;
 
         default:
-            cout << "Error : Invalid input";
-            std::this_thread::sleep_for(200ms);
-            gotoxy(0, 33);
-            cout << "                                                                               ";
             return 1;
-            system("clear");
     }
 
     // Changing paddle location
