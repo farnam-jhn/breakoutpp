@@ -31,7 +31,7 @@ Paddle paddle;
 Ball ball;
 Player player;
 
-Brick* bricks = nullptr;
+Brick bricks[36];
 int bricks_idx[36], bricks_idy[36];
 
 // Characters
@@ -127,7 +127,6 @@ int main(){
                     saveData(player.name, player.score);
                 }
 
-                deallocation(); // de allocates the array in the heap
             }
             break;
             case '2':
@@ -189,7 +188,6 @@ void setup(){
        Note : x and y in this function are swapped compared to cartesian system.
      */
 
-    bricks = new Brick[36]; // allocating board
     int counterX = 1, counterY = 10;
     for(int i = 0; i < 36; i++){ // saving the location of each brick
         bricks[i].loc.x = counterX;
@@ -201,6 +199,22 @@ void setup(){
             counterY = 10;
             counterX++;
         }
+    }
+
+    // setting up brick scores 
+    /*
+        first row(index 0 - 11) : 1000
+        second row(index 12 - 23) : 500
+        third row(index 24 - 35) : 200
+    */
+    for(int i = 0; i < 12; i++){
+        bricks[i].score = 1000;
+    }
+    for(int i = 12; i < 24; i++){
+        bricks[i].score = 500;
+    }
+    for(int i = 24; i < 36; i++){
+        bricks[i].score = 200;
     }
 
     // setting up borders
@@ -247,14 +261,6 @@ void setup(){
 
     board[ball.loc.y][ball.loc.x] = ballChar;
 
-}
-
-
-
-// deallocating board from heap
-
-void deallocation(){
-    delete[] bricks;
 }
 
 // Board rendering

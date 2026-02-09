@@ -18,6 +18,7 @@ extern string paddeleLine ;
 extern Paddle paddle;
 extern int bricksCount;
 extern std::atomic<bool> paused;
+extern Brick bricks[36];
 
 void ballmover(Ball &ball){
 
@@ -50,7 +51,7 @@ void ballmover(Ball &ball){
                 tempNewX = ball.loc.x + ball.v.vX;
                 tempNewY = ball.loc.y + ball.v.vY;
                 // delete brick and add score
-                player.score += 1000;
+                player.score += bricks[i].score;
                 bricksCount--;
                 bricks_idx[i] = -1;
                 bricks_idy[i] = -1;
@@ -98,7 +99,7 @@ void ballmover(Ball &ball){
                     if(i < 23 && i % 12 != 0 && ball.v.vX > 0){
                         if(bricks_idx[i - 1] != -1 && bricks_idx[i + 12] != -1){
                             // delete brick and add score ( two bricks )
-                            player.score += 2*1000;
+                            player.score += (bricks[i - 1].score + bricks[i + 12].score);
                             bricksCount -= 2;
                             bricks_idx[i - 1] = -1;
                             bricks_idy[i - 1] = -1;
@@ -110,7 +111,7 @@ void ballmover(Ball &ball){
                     else if(i < 23 && i % 12 != 11 && ball.v.vX < 0){
                         if(bricks_idx[i + 1] != -1 && bricks_idx[i + 12] != -1){
                             // delete brick and add score ( two bricks )
-                            player.score += 2*1000;
+                            player.score += (bricks[i + 1].score + bricks[i + 12].score);
                             bricksCount -= 2;
                             bricks_idx[i + 1] = -1;
                             bricks_idy[i + 1] = -1;
@@ -122,7 +123,7 @@ void ballmover(Ball &ball){
 
                     if(!special_case_handled){ // no special case accured
                         // delete brick and add score
-                        player.score += 1000;
+                        player.score += bricks[i].score;
                         bricksCount--;
                         bricks_idx[i] = -1;
                         bricks_idy[i] = -1;
@@ -135,7 +136,7 @@ void ballmover(Ball &ball){
                 else if(bounceX){ // Side hit
                     ball.v.vX = -ball.v.vX;
                     // delete brick and add score
-                    player.score += 1000;
+                    player.score += bricks[i].score;
                     bricksCount--;
                     bricks_idx[i] = -1;
                     bricks_idy[i] = -1;
@@ -143,7 +144,7 @@ void ballmover(Ball &ball){
                 else { // Top/bottom hit
                     ball.v.vY = -ball.v.vY;
                     // delete brick and add score
-                    player.score += 1000;
+                    player.score += bricks[i].score;
                     bricksCount--;
                     bricks_idx[i] = -1;
                     bricks_idy[i] = -1;

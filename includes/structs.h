@@ -17,9 +17,6 @@ struct Location{
 
 struct Brick{
     Location loc;
-    int width;
-    int lenght;
-    bool alive;
     int score;
 };
 
