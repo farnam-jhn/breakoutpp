@@ -91,25 +91,66 @@ void ballmover(Ball &ball){
                 }
                 
                 if(bounceX && bounceY){ // Corner hit
+
+                    // fixing the special case problem. in this case two bricks collapse at once
+                    bool special_case_handled = false; // flag
+                    if(i < 23 && i % 12 != 0 && ball.v.vX > 0){
+                        if(bricks_idx[i - 1] != -1 && bricks_idx[i + 12] != -1){
+                            // delete brick and add score ( two bricks )
+                            player.score += 2*1000;
+                            bricksCount -= 2;
+                            bricks_idx[i - 1] = -1;
+                            bricks_idy[i - 1] = -1;
+                            bricks_idx[i + 12] = -1;
+                            bricks_idy[i + 12] = -1;
+                            special_case_handled = true;
+                        }
+                    }
+                    else if(i < 23 && i % 12 != 11 && ball.v.vX < 0){
+                        if(bricks_idx[i + 1] != -1 && bricks_idx[i + 12] != -1){
+                            // delete brick and add score ( two bricks )
+                            player.score += 2*1000;
+                            bricksCount -= 2;
+                            bricks_idx[i + 1] = -1;
+                            bricks_idy[i + 1] = -1;
+                            bricks_idx[i + 12] = -1;
+                            bricks_idy[i + 12] = -1;
+                            special_case_handled = true;
+                        }
+                    }
+                    
+                    if(!special_case_handled){ // no special case accured
+                        // delete brick and add score
+                        player.score += 1000;
+                        bricksCount--;
+                        bricks_idx[i] = -1;
+                        bricks_idy[i] = -1;
+                    }
+
+
                     ball.v.vX = -ball.v.vX;
                     ball.v.vY = -ball.v.vY;
                 }
                 else if(bounceX){ // Side hit
                     ball.v.vX = -ball.v.vX;
+                    // delete brick and add score
+                    player.score += 1000;
+                    bricksCount--;
+                    bricks_idx[i] = -1;
+                    bricks_idy[i] = -1;
                 }
                 else { // Top/bottom hit
                     ball.v.vY = -ball.v.vY;
+                    // delete brick and add score
+                    player.score += 1000;
+                    bricksCount--;
+                    bricks_idx[i] = -1;
+                    bricks_idy[i] = -1;
                 }
                 
                 // Recalculate position after bounce
                 tempNewX = ball.loc.x + ball.v.vX;
-                tempNewY = ball.loc.y + ball.v.vY;
-                
-                // delete brick and add score
-                player.score += 1000;
-                bricksCount--;
-                bricks_idx[i] = -1;
-                bricks_idy[i] = -1;
+                tempNewY = ball.loc.y + ball.v.vY;                
                 
                 break;  // Only handle one brick per frame
             }
