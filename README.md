@@ -40,3 +40,4 @@ g++ -o breakoutpp main.cpp includes/*.cpp
 ### Note
 
 currently only supports unix-like operating systems (e.g Linux, macOS, BSD)
+you can compile and play the game in windows using [WSL](https://learn.microsoft.com/en-us/windows/wsl/)
