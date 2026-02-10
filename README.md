@@ -41,3 +41,9 @@ g++ -o breakoutpp main.cpp includes/*.cpp
 
 currently only supports unix-like operating systems (e.g Linux, macOS, BSD)
 you can compile and play the game in windows using [WSL](https://learn.microsoft.com/en-us/windows/wsl/)
+
+## License
+
+This project is licensed under the GNU General Public License v2.0 - see the [LICENSE](LICENSE) file for details.
+
+Copyright (C) 2026 PNG GROUP
